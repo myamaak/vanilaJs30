@@ -62,12 +62,43 @@
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%;
+      /* transform의 회전 기준점을 지정하기 위해 쓰인다. 백분율 혹은 키워드로 지정 가능. 
+      100%와 100% 100% 에는 보여지는 것에 약간 차이가 있다. 어떤 차이인지는 잘 모르겠다... 찾아봐야 할 듯!*/
+      /* transform: rotate(90deg); 어차피 매번 90도를 더해줘야 하므로 여기에서 해당 코드는 필요 x*/
+      transition: all 0.03s;
+      /* transition은 property의 변화를 관리하는데 사용된다. all은 위아래왼오른 모두를 의미한다. 0.05는 변화에 걸리는 시간을 의미.*/
+      transition-timing-function: cubic-bezier(0.1, 2.7, 0.58, 1); 
+      /* 시계 침이 움직이는 효과를 주기 위해 transition effect의 변화 방식을 지정한 것. */
     }
 
   </style>
-
   <script>
+    function setTime(){
+      const date = new Date(); 
+      // 함수 내에서는 변하지 않는 변수이다. 변하는 것처럼 보이는 건 매 초마다 함수를 호출하는 것 때문일 뿐.)
+      const divSec = document.querySelector('.second-hand');
+      const curSec = date.getSeconds();
+      const secDeg = 90+curSec/60*360;
+      divSec.style.transform=`rotate(${secDeg}deg)`;
 
+      const divMinute = document.querySelector('.min-hand');
+      const curMin = date.getMinutes();
+      const minDeg = 90+curMin/60*360 + curSec/60*6;
+      divMinute.style.transform=`rotate(${minDeg}deg)`;
+
+      const divHour = document.querySelector('.hour-hand');
+      const curHour = date.getHours();
+      const hourDeg = 90+((curHour/12)*360) + curMin/60*30;
+      divHour.style.transform=`rotate(${hourDeg}deg)`;
+    }
+    setInterval(setTime, 1000);
+    //시각이 바뀔때마다 알아서 새로 랜더링 되지 않는 js의 특성상 1초 간격으로 함수를 다시 호출해주어야 한다.
+    
+    setTime();
+    //최초 onmount 시점 1초 후에 setInterval이 작동하므로 
+    //최초에 setTime을 한번 호출해주지 않으면 사용자가 시계가 정상적으로 보여질때까지 1초 기다려야 한다.
+    //그러므로 따로 setTime을 한번 호출해준다!
 
   </script>
 </body>
